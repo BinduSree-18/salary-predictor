@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Salary Predictor</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            width: 400px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+
+        input, select {
+            width: 90%;
+            padding: 8px;
+            margin: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Salary Predictor</h2>
+
+    <input type="number" id="age" placeholder="Enter Age">
+
+    <select id="gender">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </select>
+
+    <select id="education">
+        <option value="">Select Education</option>
+        <option value="Bachelor's">Bachelor's</option>
+        <option value="Master's">Master's</option>
+        <option value="PhD">PhD</option>
+    </select>
+
+    <input type="text" id="job_title" placeholder="Enter Job Title">
+
+    <input type="number" id="experience" placeholder="Years of Experience">
+
+    <button onclick="predictSalary()">Predict Salary</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function predictSalary() {
+    const age = document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+    const education = document.getElementById("education").value;
+    const job_title = document.getElementById("job_title").value;
+    const experience = document.getElementById("experience").value;
+
+    fetch("http://127.0.0.1:5000/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            age: age,
+            gender: gender,
+            education: education,
+            job_title: job_title,
+            experience: experience
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").innerText =
+            "Predicted Salary: ₹ " + data.predicted_salary;
+    })
+    .catch(error => {
+        document.getElementById("result").innerText =
+            "Error connecting to server!";
+    });
+}
+</script>
+
+</body>
+</html>
